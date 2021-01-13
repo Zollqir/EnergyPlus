@@ -51,16 +51,16 @@
 #include <gtest/gtest.h>
 
 // EnergyPlus Headers
-#include <EnergyPlus/DataGlobals.hh>
-#include <EnergyPlus/DataIPShortCuts.hh>
-#include <EnergyPlus/GroundTemperatureModeling/FiniteDifferenceGroundTemperatureModel.hh>
-#include <EnergyPlus/GroundTemperatureModeling/GroundTemperatureModelManager.hh>
-#include <EnergyPlus/WeatherManager.hh>
-#include <EnergyPlus/DataEnvironment.hh>
-#include <EnergyPlus/SimulationManager.hh>
-#include <EnergyPlus/ElectricPowerServiceManager.hh>
 #include <EnergyPlus/ConfiguredFunctions.hh>
 #include <EnergyPlus/Data/EnergyPlusData.hh>
+#include <EnergyPlus/DataEnvironment.hh>
+#include <EnergyPlus/DataGlobals.hh>
+#include <EnergyPlus/DataIPShortCuts.hh>
+#include <EnergyPlus/ElectricPowerServiceManager.hh>
+#include <EnergyPlus/GroundTemperatureModeling/FiniteDifferenceGroundTemperatureModel.hh>
+#include <EnergyPlus/GroundTemperatureModeling/GroundTemperatureModelManager.hh>
+#include <EnergyPlus/SimulationManager.hh>
+#include <EnergyPlus/WeatherManager.hh>
 
 #include "Fixtures/EnergyPlusFixture.hh"
 
@@ -99,8 +99,8 @@ TEST_F(EnergyPlusFixture, FiniteDiffGroundTempModelTest)
     for (int day = 1; day <= state->dataWeatherManager->NumDaysInYear; ++day) {
         auto &tdwd = thisModel->weatherDataArray(day); // "This day weather data"
 
-        Real64 theta = 2 * DataGlobalConstants::Pi() * day / state->dataWeatherManager->NumDaysInYear;
-        Real64 omega = 2 * DataGlobalConstants::Pi() * 130 / state->dataWeatherManager->NumDaysInYear; // Shifts min to around the end of Jan
+        Real64 theta = 2 * DataGlobalConstants::Pi * day / state->dataWeatherManager->NumDaysInYear;
+        Real64 omega = 2 * DataGlobalConstants::Pi * 130 / state->dataWeatherManager->NumDaysInYear; // Shifts min to around the end of Jan
 
         tdwd.dryBulbTemp = drybulb_amp * std::sin(theta - omega) + (drybulb_minTemp + drybulb_amp);
         tdwd.relativeHumidity = relHum_const;

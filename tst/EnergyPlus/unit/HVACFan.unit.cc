@@ -52,12 +52,12 @@
 
 // EnergyPlus Headers
 #include "Fixtures/EnergyPlusFixture.hh"
-#include <EnergyPlus/EMSManager.hh>
 #include <EnergyPlus/CurveManager.hh>
+#include <EnergyPlus/Data/EnergyPlusData.hh>
 #include <EnergyPlus/DataEnvironment.hh>
 #include <EnergyPlus/DataSizing.hh>
+#include <EnergyPlus/EMSManager.hh>
 #include <EnergyPlus/HVACFan.hh>
-#include <EnergyPlus/Data/EnergyPlusData.hh>
 
 namespace EnergyPlus {
 
@@ -602,7 +602,7 @@ TEST_F(EnergyPlusFixture, SystemFanObj_DiscreteMode_EMSPressureRiseResetTest)
     ASSERT_TRUE(process_idf(idf_objects));
 
     EMSManager::CheckIfAnyEMS(*state);
-    EMSManager::FinishProcessingUserInput = true;
+    state->dataEMSMgr->FinishProcessingUserInput = true;
 
     std::string fanName = "TEST FAN";
     HVACFan::fanObjs.emplace_back(new HVACFan::FanSystem(*state, fanName)); // call constructor

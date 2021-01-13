@@ -52,6 +52,7 @@
 
 // EnergyPlus Headers
 #include <EnergyPlus/CurveManager.hh>
+#include <EnergyPlus/Data/EnergyPlusData.hh>
 #include <EnergyPlus/DataAirLoop.hh>
 #include <EnergyPlus/DataAirSystems.hh>
 #include <EnergyPlus/DataEnvironment.hh>
@@ -61,7 +62,6 @@
 #include <EnergyPlus/EvaporativeCoolers.hh>
 #include <EnergyPlus/Psychrometrics.hh>
 #include <EnergyPlus/SimAirServingZones.hh>
-#include <EnergyPlus/Data/EnergyPlusData.hh>
 
 #include "Fixtures/EnergyPlusFixture.hh"
 
@@ -731,7 +731,7 @@ TEST_F(EnergyPlusFixture, DirectEvapCoolerResearchSpecialCalcTest)
     // set up the flow rates for a direct RDDSpecial
     thisEvapCooler.evapCoolerType = EvapCoolerType::DirectResearchSpecial;
     thisEvapCooler.EvapCoolerName = "MyDirectEvapCoolerRS";
-    thisEvapCooler.SchedPtr = DataGlobalConstants::ScheduleAlwaysOn();
+    thisEvapCooler.SchedPtr = DataGlobalConstants::ScheduleAlwaysOn;
     thisEvapCooler.PumpPowerModifierCurveIndex = CurveNum;
     thisEvapCooler.DirectEffectiveness = 0.75;
     thisEvapCooler.DesVolFlowRate = 1.0;

@@ -99,14 +99,12 @@ namespace SteamCoils {
     using namespace DataHVACGlobals;
     using namespace Psychrometrics;
     using namespace FluidProperties;
-    using DataPlant::PlantLoop;
     using DataPlant::TypeOf_CoilSteamAirHeating;
     using PlantUtilities::MyPlantSizingIndex;
     using PlantUtilities::ScanPlantLoopsForObject;
     using namespace ScheduleManager;
 
     static std::string const fluidNameSteam("STEAM");
-    static std::string const BlankString;
 
     void SimulateSteamCoilComponents(EnergyPlusData &state,
                                      std::string const &CompName,
@@ -284,7 +282,7 @@ namespace SteamCoils {
             state.dataSteamCoils->SteamCoil(CoilNum).Name = AlphArray(1);
             state.dataSteamCoils->SteamCoil(CoilNum).Schedule = AlphArray(2);
             if (lAlphaBlanks(2)) {
-                state.dataSteamCoils->SteamCoil(CoilNum).SchedPtr = DataGlobalConstants::ScheduleAlwaysOn();
+                state.dataSteamCoils->SteamCoil(CoilNum).SchedPtr = DataGlobalConstants::ScheduleAlwaysOn;
             } else {
                 state.dataSteamCoils->SteamCoil(CoilNum).SchedPtr = GetScheduleIndex(state, AlphArray(2));
                 if (state.dataSteamCoils->SteamCoil(CoilNum).SchedPtr == 0) {
@@ -475,7 +473,7 @@ namespace SteamCoils {
             state.dataSteamCoils->MyOneTimeFlag = false;
         }
 
-        if (MyPlantScanFlag(CoilNum) && allocated(PlantLoop)) {
+        if (MyPlantScanFlag(CoilNum) && allocated(state.dataPlnt->PlantLoop)) {
             errFlag = false;
             ScanPlantLoopsForObject(state,
                                     state.dataSteamCoils->SteamCoil(CoilNum).Name,
@@ -1417,7 +1415,7 @@ namespace SteamCoils {
         Node(AirOutletNode).HumRat = state.dataSteamCoils->SteamCoil(CoilNum).OutletAirHumRat;
         Node(AirOutletNode).Enthalpy = state.dataSteamCoils->SteamCoil(CoilNum).OutletAirEnthalpy;
 
-        SafeCopyPlantNode(SteamInletNode, SteamOutletNode);
+        SafeCopyPlantNode(state, SteamInletNode, SteamOutletNode);
 
         // Set the outlet Steam nodes for the Coil
         //   Node(SteamOutletNode)%MassFlowRate = SteamCoil(CoilNum)%OutletSteamMassFlowRate
@@ -1474,7 +1472,7 @@ namespace SteamCoils {
         // This subroutine updates the report variable for the coils.
 
         // Report the SteamCoil energy from this component
-        state.dataSteamCoils->SteamCoil(CoilNum).TotSteamHeatingCoilEnergy = state.dataSteamCoils->SteamCoil(CoilNum).TotSteamHeatingCoilRate * TimeStepSys * DataGlobalConstants::SecInHour();
+        state.dataSteamCoils->SteamCoil(CoilNum).TotSteamHeatingCoilEnergy = state.dataSteamCoils->SteamCoil(CoilNum).TotSteamHeatingCoilRate * TimeStepSys * DataGlobalConstants::SecInHour;
     }
 
     // End of Reporting subroutines for the SteamCoil Module

@@ -48,17 +48,14 @@
 // EnergyPlus::MultiSpeedAirToAirHeatPump Unit Tests
 
 // Google Test Headers
-#include "Fixtures/EnergyPlusFixture.hh"
 #include <gtest/gtest.h>
 
-#include <EnergyPlus/Data/EnergyPlusData.hh>
-
-// ObjexxFCL Headers
+#include "Fixtures/EnergyPlusFixture.hh"
 #include <EnergyPlus/BranchInputManager.hh>
 #include <EnergyPlus/DXCoils.hh>
+#include <EnergyPlus/Data/EnergyPlusData.hh>
 #include <EnergyPlus/DataAirSystems.hh>
 #include <EnergyPlus/DataEnvironment.hh>
-#include <EnergyPlus/DataGlobals.hh>
 #include <EnergyPlus/DataHVACGlobals.hh>
 #include <EnergyPlus/DataHeatBalance.hh>
 #include <EnergyPlus/DataZoneControls.hh>
@@ -1339,10 +1336,10 @@ TEST_F(EnergyPlusFixture, HVACMultiSpeedHeatPump_ReportVariableInitTest)
 
     Fans::Fan(2).MaxAirMassFlowRate = DataLoopNode::Node(16).MassFlowRateMaxAvail;
     Fans::Fan(2).RhoAirStdInit = state->dataEnvrn->StdRhoAir;
-    DXCoils::DXCoil(2).MSRatedAirMassFlowRate(1) = DXCoils::DXCoil(2).MSRatedAirVolFlowRate(1) * state->dataEnvrn->StdRhoAir;
-    DXCoils::DXCoil(2).MSRatedAirMassFlowRate(2) = DXCoils::DXCoil(2).MSRatedAirVolFlowRate(2) * state->dataEnvrn->StdRhoAir;
-    DXCoils::DXCoil(2).MSRatedCBF(1) = 0.2;
-    DXCoils::DXCoil(2).MSRatedCBF(2) = 0.2;
+    state->dataDXCoils->DXCoil(2).MSRatedAirMassFlowRate(1) = state->dataDXCoils->DXCoil(2).MSRatedAirVolFlowRate(1) * state->dataEnvrn->StdRhoAir;
+    state->dataDXCoils->DXCoil(2).MSRatedAirMassFlowRate(2) = state->dataDXCoils->DXCoil(2).MSRatedAirVolFlowRate(2) * state->dataEnvrn->StdRhoAir;
+    state->dataDXCoils->DXCoil(2).MSRatedCBF(1) = 0.2;
+    state->dataDXCoils->DXCoil(2).MSRatedCBF(2) = 0.2;
 
     Real64 QSensUnitOut;
     // Cooling
@@ -1381,7 +1378,7 @@ TEST_F(EnergyPlusFixture, HVACMultiSpeedHeatPump_ReportVariableInitTest)
 
     // Heating
     QZnReq = 10000.00;
-    MSHeatPump(2).HeatCoolMode = HeatingMode;
+    MSHeatPump(2).HeatCoolMode = EnergyPlus::HVACMultiSpeedHeatPump::ModeOfOperation::HeatingMode;
     state->dataEnvrn->OutDryBulbTemp = 5.0;
     state->dataEnvrn->OutHumRat = 0.008;
     state->dataGlobal->DoCoilDirectSolutions = false;
@@ -1416,9 +1413,9 @@ TEST_F(EnergyPlusFixture, HVACMultiSpeedHeatPump_HeatRecoveryTest)
     DataLoopNode::Node(HeatRecInNode).Temp = 50.0;
     DataHVACGlobals::MSHPWasteHeat = 1000.0;
 
-    DataPlant::PlantLoop.allocate(1);
-    DataPlant::PlantLoop(1).FluidName = "WATER";
-    DataPlant::PlantLoop(1).FluidIndex = 1;
+    state->dataPlnt->PlantLoop.allocate(1);
+    state->dataPlnt->PlantLoop(1).FluidName = "WATER";
+    state->dataPlnt->PlantLoop(1).FluidIndex = 1;
 
     DataLoopNode::Node(HeatRecInNode).MassFlowRate = 0.0; // test heat recovery result with 0 water flow rate
     HVACMultiSpeedHeatPump::MSHPHeatRecovery(*state, 1);

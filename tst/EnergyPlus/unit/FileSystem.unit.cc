@@ -50,12 +50,13 @@
 // Google Test Headers
 #include <gtest/gtest.h>
 
-// EnergyPlus Headers
-#include <iostream>
+// C++ Headers
 #include <fstream>
+#include <iostream>
+
+// EnergyPlus Headers
 #include <EnergyPlus/DataStringGlobals.hh>
 #include <EnergyPlus/FileSystem.hh>
-#include <EnergyPlus/Data/EnergyPlusData.hh>
 
 // We don't have a remove_all function since we do not use std::filesystem (or boost::filesystem), so make a very sketchy and crude one for testing
 // only

@@ -56,8 +56,8 @@
 #include <EnergyPlus/BaseboardElectric.hh>
 #include <EnergyPlus/Construction.hh>
 #include <EnergyPlus/ConvectionCoefficients.hh>
+#include <EnergyPlus/Data/EnergyPlusData.hh>
 #include <EnergyPlus/DataEnvironment.hh>
-#include <EnergyPlus/DataGlobals.hh>
 #include <EnergyPlus/DataHeatBalFanSys.hh>
 #include <EnergyPlus/DataHeatBalSurface.hh>
 #include <EnergyPlus/DataHeatBalance.hh>
@@ -69,8 +69,6 @@
 #include <EnergyPlus/HeatBalanceSurfaceManager.hh>
 #include <EnergyPlus/IOFiles.hh>
 #include <EnergyPlus/SurfaceGeometry.hh>
-#include <EnergyPlus/UtilityRoutines.hh>
-#include <EnergyPlus/Data/EnergyPlusData.hh>
 
 #include "Fixtures/EnergyPlusFixture.hh"
 
@@ -714,7 +712,7 @@ TEST_F(ConvectionCoefficientsFixture, EvaluateHnModels)
     SurfNum = 1;
     DataSurfaces::Surface.allocate(SurfNum);
     DataSurfaces::Surface(SurfNum).Zone = 1;
-    DataRoomAirModel::AirModel.allocate(1);
+    state->dataRoomAirMod->AirModel.allocate(1);
     EnergyPlus::DataHeatBalance::TempEffBulkAir.allocate(1);
     EnergyPlus::DataHeatBalance::TempEffBulkAir(1) = 1.0;
     SurfTemp.allocate(1);
@@ -732,7 +730,7 @@ TEST_F(ConvectionCoefficientsFixture, EvaluateHnModels)
     DataSurfaces::Surface(SurfNum).HeatTransSurf = true;
     DataSurfaces::Surface(SurfNum).TAirRef = DataSurfaces::AdjacentAirTemp;
     DataSurfaces::Surface(SurfNum).IntConvCoeff = 0.0;
-    DataRoomAirModel::AirModel(DataSurfaces::Surface(SurfNum).Zone).AirModelType = DataRoomAirModel::RoomAirModel_UCSDDV;
+    state->dataRoomAirMod->AirModel(DataSurfaces::Surface(SurfNum).Zone).AirModelType = DataRoomAirModel::RoomAirModel::UCSDDV;
     DataSurfaces::Surface(SurfNum).CosTilt = 1.0;
     SurfTemp(1) = 0.0;
     HcIn(1) = 0.0;
@@ -743,7 +741,7 @@ TEST_F(ConvectionCoefficientsFixture, EvaluateHnModels)
     DataSurfaces::Surface(SurfNum).HeatTransSurf = true;
     DataSurfaces::Surface(SurfNum).TAirRef = DataSurfaces::AdjacentAirTemp;
     DataSurfaces::Surface(SurfNum).IntConvCoeff = 0.0;
-    DataRoomAirModel::AirModel(DataSurfaces::Surface(SurfNum).Zone).AirModelType = DataRoomAirModel::RoomAirModel_UCSDCV;
+    state->dataRoomAirMod->AirModel(DataSurfaces::Surface(SurfNum).Zone).AirModelType = DataRoomAirModel::RoomAirModel::UCSDCV;
     DataSurfaces::Surface(SurfNum).CosTilt = 1.0;
     SurfTemp(1) = 0.0;
     HcIn(1) = 0.0;

@@ -53,8 +53,8 @@
 #include "Fixtures/EnergyPlusFixture.hh"
 
 // EnergyPlus Headers
-#include <EnergyPlus/Data/EnergyPlusData.hh>
 #include <AirflowNetwork/Elements.hpp>
+#include <EnergyPlus/Data/EnergyPlusData.hh>
 #include <EnergyPlus/DataEnvironment.hh>
 #include <EnergyPlus/DataHVACGlobals.hh>
 #include <EnergyPlus/DataHeatBalFanSys.hh>
@@ -166,7 +166,7 @@ TEST_F(EnergyPlusFixture, ZoneTempPredictorCorrector_CorrectZoneHumRatTest)
     ZoneAirHumRatTemp.allocate(1);
     ZoneW1.allocate(1);
 
-    AirModel.allocate(1);
+    state->dataRoomAirMod->AirModel.allocate(1);
     ZoneIntGain.allocate(1);
 
     // Case 1 - All flows at the same humrat

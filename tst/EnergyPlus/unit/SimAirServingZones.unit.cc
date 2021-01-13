@@ -51,28 +51,22 @@
 #include <gtest/gtest.h>
 
 // C++ Headers
-#include <cassert>
-#include <cmath>
 #include <string>
-
-// ObjexxFCL Headers
-#include <ObjexxFCL/Array.functions.hh>
-#include <ObjexxFCL/Fmath.hh>
 
 // EnergyPlus Headers
 #include "Fixtures/EnergyPlusFixture.hh"
+#include <EnergyPlus/Data/EnergyPlusData.hh>
 #include <EnergyPlus/DataAirSystems.hh>
 #include <EnergyPlus/DataSizing.hh>
 #include <EnergyPlus/DataZoneEquipment.hh>
 #include <EnergyPlus/HeatBalanceManager.hh>
 #include <EnergyPlus/MixedAir.hh>
 #include <EnergyPlus/SimAirServingZones.hh>
+#include <EnergyPlus/SimulationManager.hh>
 #include <EnergyPlus/SingleDuct.hh>
 #include <EnergyPlus/SplitterComponent.hh>
 #include <EnergyPlus/UtilityRoutines.hh>
 #include <EnergyPlus/ZoneAirLoopEquipmentManager.hh>
-#include <EnergyPlus/Data/EnergyPlusData.hh>
-#include <EnergyPlus/SimulationManager.hh>
 
 using namespace EnergyPlus;
 using namespace DataAirSystems;
@@ -181,7 +175,7 @@ TEST_F(EnergyPlusFixture, SimAirServingZones_LimitZoneVentEff)
     Real64 SysCoolingEv = 1.0 + Xs - ZoneOAFrac; // System level ventilation effectiveness for cooling (from SimAirServingZone::UpdateSysSizing right
                                                  // before call to LimitZoneVentEff)
     Real64 StartingSysCoolingEv = SysCoolingEv;
-    LimitZoneVentEff(Xs, VozClg, CtrlZoneNum, SysCoolingEv);
+    LimitZoneVentEff(*state, Xs, VozClg, CtrlZoneNum, SysCoolingEv);
     EXPECT_EQ(StartingSysCoolingEv, SysCoolingEv);
     EXPECT_EQ(StartingDesCoolVolFlow, TermUnitFinalZoneSizing(CtrlZoneNum).DesCoolVolFlow);
     EXPECT_EQ(StartingDesCoolVolFlowMin, TermUnitFinalZoneSizing(CtrlZoneNum).DesCoolVolFlowMin);
@@ -201,7 +195,7 @@ TEST_F(EnergyPlusFixture, SimAirServingZones_LimitZoneVentEff)
     SysCoolingEv = 1.0 + Xs - ZoneOAFrac; // System level ventilation effectiveness for cooling (from SimAirServingZone::UpdateSysSizing right before
                                           // call to LimitZoneVentEff)
     StartingSysCoolingEv = SysCoolingEv;
-    LimitZoneVentEff(Xs, VozClg, CtrlZoneNum, SysCoolingEv);
+    LimitZoneVentEff(*state, Xs, VozClg, CtrlZoneNum, SysCoolingEv);
     EXPECT_EQ(TermUnitFinalZoneSizing(CtrlZoneNum).ZoneVentilationEff, SysCoolingEv);
     EXPECT_EQ(StartingDesCoolVolFlow, TermUnitFinalZoneSizing(CtrlZoneNum).DesCoolVolFlow);
     EXPECT_NEAR(0.2857, TermUnitFinalZoneSizing(CtrlZoneNum).DesCoolVolFlowMin, 0.001);
@@ -221,7 +215,7 @@ TEST_F(EnergyPlusFixture, SimAirServingZones_LimitZoneVentEff)
     SysCoolingEv = 1.0 + Xs - ZoneOAFrac; // System level ventilation effectiveness for cooling (from SimAirServingZone::UpdateSysSizing right before
                                           // call to LimitZoneVentEff)
     StartingSysCoolingEv = SysCoolingEv;
-    LimitZoneVentEff(Xs, VozClg, CtrlZoneNum, SysCoolingEv);
+    LimitZoneVentEff(*state, Xs, VozClg, CtrlZoneNum, SysCoolingEv);
     EXPECT_EQ(TermUnitFinalZoneSizing(CtrlZoneNum).ZoneVentilationEff, SysCoolingEv);
     EXPECT_NEAR(2.2857, TermUnitFinalZoneSizing(CtrlZoneNum).DesCoolVolFlow, 0.001);
     EXPECT_NEAR(2.2857, TermUnitFinalZoneSizing(CtrlZoneNum).DesCoolVolFlowMin, 0.001);

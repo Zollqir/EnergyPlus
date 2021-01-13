@@ -59,9 +59,7 @@
 #include <EnergyPlus/BranchNodeConnections.hh>
 #include <EnergyPlus/DXCoils.hh>
 #include <EnergyPlus/Data/EnergyPlusData.hh>
-#include <EnergyPlus/DataAirLoop.hh>
 #include <EnergyPlus/DataAirSystems.hh>
-#include <EnergyPlus/DataEnvironment.hh>
 #include <EnergyPlus/DataHVACGlobals.hh>
 #include <EnergyPlus/DataHeatBalFanSys.hh>
 #include <EnergyPlus/DataHeatBalance.hh>
@@ -74,7 +72,6 @@
 #include <EnergyPlus/Fans.hh>
 #include <EnergyPlus/FluidProperties.hh>
 #include <EnergyPlus/Furnaces.hh>
-#include <EnergyPlus/General.hh>
 #include <EnergyPlus/GeneralRoutines.hh>
 #include <EnergyPlus/GlobalNames.hh>
 #include <EnergyPlus/HVACControllers.hh>
@@ -188,9 +185,6 @@ namespace Furnaces {
     // Airflow control for contant fan mode
     int const UseCompressorOnFlow(1);  // set compressor OFF air flow rate equal to compressor ON air flow rate
     int const UseCompressorOffFlow(2); // set compressor OFF air flow rate equal to user defined value
-    // Compressor operation
-    int const On(1);  // normal compressor operation
-    int const Off(0); // signal DXCoil that compressor shouldn't run
 
     // Dehumidification control modes (DehumidControlMode)
     int const DehumidControl_None(0);
@@ -1090,7 +1084,7 @@ namespace Furnaces {
 
             Furnace(FurnaceNum).Name = Alphas(1);
             if (lAlphaBlanks(2)) {
-                Furnace(FurnaceNum).SchedPtr = DataGlobalConstants::ScheduleAlwaysOn();
+                Furnace(FurnaceNum).SchedPtr = DataGlobalConstants::ScheduleAlwaysOn;
             } else {
                 Furnace(FurnaceNum).SchedPtr = GetScheduleIndex(state, Alphas(2));
                 if (Furnace(FurnaceNum).SchedPtr == 0) {
@@ -1636,7 +1630,7 @@ namespace Furnaces {
 
             Furnace(FurnaceNum).Name = Alphas(1);
             if (lAlphaBlanks(2)) {
-                Furnace(FurnaceNum).SchedPtr = DataGlobalConstants::ScheduleAlwaysOn();
+                Furnace(FurnaceNum).SchedPtr = DataGlobalConstants::ScheduleAlwaysOn;
             } else {
                 Furnace(FurnaceNum).SchedPtr = GetScheduleIndex(state, Alphas(2));
                 if (Furnace(FurnaceNum).SchedPtr == 0) {
@@ -2843,7 +2837,7 @@ namespace Furnaces {
             Furnace(FurnaceNum).FurnaceType_Num = UnitarySys_HeatPump_AirToAir;
             Furnace(FurnaceNum).Name = Alphas(1);
             if (lAlphaBlanks(2)) {
-                Furnace(FurnaceNum).SchedPtr = DataGlobalConstants::ScheduleAlwaysOn();
+                Furnace(FurnaceNum).SchedPtr = DataGlobalConstants::ScheduleAlwaysOn;
             } else {
                 Furnace(FurnaceNum).SchedPtr = GetScheduleIndex(state, Alphas(2));
                 if (Furnace(FurnaceNum).SchedPtr == 0) {
@@ -3765,7 +3759,7 @@ namespace Furnaces {
             Furnace(FurnaceNum).FurnaceType_Num = UnitarySys_HeatPump_WaterToAir;
             Furnace(FurnaceNum).Name = Alphas(1);
             if (lAlphaBlanks(2)) {
-                Furnace(FurnaceNum).SchedPtr = DataGlobalConstants::ScheduleAlwaysOn();
+                Furnace(FurnaceNum).SchedPtr = DataGlobalConstants::ScheduleAlwaysOn;
             } else {
                 Furnace(FurnaceNum).SchedPtr = GetScheduleIndex(state, Alphas(2));
                 if (Furnace(FurnaceNum).SchedPtr == 0) {
@@ -4539,7 +4533,7 @@ namespace Furnaces {
                                 "Average",
                                 Furnace(FurnaceNum).Name);
             if (state.dataGlobal->AnyEnergyManagementSystemInModel) {
-                SetupEMSActuator("AirLoopHVAC:Unitary:Furnace:HeatOnly",
+                SetupEMSActuator(state, "AirLoopHVAC:Unitary:Furnace:HeatOnly",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate",
                                  "[m3/s]",
@@ -4558,7 +4552,7 @@ namespace Furnaces {
                                 "Average",
                                 Furnace(FurnaceNum).Name);
             if (state.dataGlobal->AnyEnergyManagementSystemInModel) {
-                SetupEMSActuator("AirLoopHVAC:UnitaryHeatOnly",
+                SetupEMSActuator(state, "AirLoopHVAC:UnitaryHeatOnly",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate",
                                  "[m3/s]",
@@ -4584,25 +4578,25 @@ namespace Furnaces {
                                 Furnace(FurnaceNum).Name);
 
             if (state.dataGlobal->AnyEnergyManagementSystemInModel) {
-                SetupEMSActuator("AirLoopHVAC:Unitary:Furnace:HeatCool",
+                SetupEMSActuator(state, "AirLoopHVAC:Unitary:Furnace:HeatCool",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate",
                                  "[m3/s]",
                                  Furnace(FurnaceNum).DesignFanVolFlowRateEMSOverrideOn,
                                  Furnace(FurnaceNum).DesignFanVolFlowRateEMSOverrideValue);
-                SetupEMSActuator("AirLoopHVAC:Unitary:Furnace:HeatCool",
+                SetupEMSActuator(state, "AirLoopHVAC:Unitary:Furnace:HeatCool",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate During Cooling Operation",
                                  "[m3/s]",
                                  Furnace(FurnaceNum).MaxCoolAirVolFlowEMSOverrideOn,
                                  Furnace(FurnaceNum).MaxCoolAirVolFlowEMSOverrideValue);
-                SetupEMSActuator("AirLoopHVAC:Unitary:Furnace:HeatCool",
+                SetupEMSActuator(state, "AirLoopHVAC:Unitary:Furnace:HeatCool",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate During Heating Operation",
                                  "[m3/s]",
                                  Furnace(FurnaceNum).MaxHeatAirVolFlowEMSOverrideOn,
                                  Furnace(FurnaceNum).MaxHeatAirVolFlowEMSOverrideValue);
-                SetupEMSActuator("AirLoopHVAC:Unitary:Furnace:HeatCool",
+                SetupEMSActuator(state, "AirLoopHVAC:Unitary:Furnace:HeatCool",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate During No Heating or Cooling Operation",
                                  "[m3/s]",
@@ -4629,25 +4623,25 @@ namespace Furnaces {
                                 "Average",
                                 Furnace(FurnaceNum).Name);
             if (state.dataGlobal->AnyEnergyManagementSystemInModel) {
-                SetupEMSActuator("AirLoopHVAC:UnitaryHeatCool",
+                SetupEMSActuator(state, "AirLoopHVAC:UnitaryHeatCool",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate",
                                  "[m3/s]",
                                  Furnace(FurnaceNum).DesignFanVolFlowRateEMSOverrideOn,
                                  Furnace(FurnaceNum).DesignFanVolFlowRateEMSOverrideValue);
-                SetupEMSActuator("AirLoopHVAC:UnitaryHeatCool",
+                SetupEMSActuator(state, "AirLoopHVAC:UnitaryHeatCool",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate During Cooling Operation",
                                  "[m3/s]",
                                  Furnace(FurnaceNum).MaxCoolAirVolFlowEMSOverrideOn,
                                  Furnace(FurnaceNum).MaxCoolAirVolFlowEMSOverrideValue);
-                SetupEMSActuator("AirLoopHVAC:UnitaryHeatCool",
+                SetupEMSActuator(state, "AirLoopHVAC:UnitaryHeatCool",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate During Heating Operation",
                                  "[m3/s]",
                                  Furnace(FurnaceNum).MaxHeatAirVolFlowEMSOverrideOn,
                                  Furnace(FurnaceNum).MaxHeatAirVolFlowEMSOverrideValue);
-                SetupEMSActuator("AirLoopHVAC:UnitaryHeatCool",
+                SetupEMSActuator(state, "AirLoopHVAC:UnitaryHeatCool",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate During No Heating or Cooling Operation",
                                  "[m3/s]",
@@ -4681,7 +4675,7 @@ namespace Furnaces {
                                 Furnace(FurnaceNum).Name);
 
             if (state.dataGlobal->AnyEnergyManagementSystemInModel) {
-                SetupEMSActuator("AirLoopHVAC:UnitaryHeatPump:AirToAir",
+                SetupEMSActuator(state, "AirLoopHVAC:UnitaryHeatPump:AirToAir",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate",
                                  "[m3/s]",
@@ -4732,7 +4726,7 @@ namespace Furnaces {
                                 Furnace(FurnaceNum).Name);
 
             if (state.dataGlobal->AnyEnergyManagementSystemInModel) {
-                SetupEMSActuator("AirLoopHVAC:UnitaryHeatPump:WaterToAir",
+                SetupEMSActuator(state, "AirLoopHVAC:UnitaryHeatPump:WaterToAir",
                                  Furnace(FurnaceNum).Name,
                                  "Autosized Supply Air Flow Rate",
                                  "[m3/s]",
@@ -4747,13 +4741,13 @@ namespace Furnaces {
                     "Unitary HVAC Design Heating Capacity", Furnace(FurnaceNum).Name, "[W]", Furnace(FurnaceNum).DesignHeatingCapacity);
                 SetupEMSInternalVariable(state,
                     "Unitary HVAC Design Cooling Capacity", Furnace(FurnaceNum).Name, "[W]", Furnace(FurnaceNum).DesignCoolingCapacity);
-                SetupEMSActuator("Unitary HVAC",
+                SetupEMSActuator(state, "Unitary HVAC",
                                  Furnace(FurnaceNum).Name,
                                  "Sensible Load Request",
                                  "[W]",
                                  Furnace(FurnaceNum).EMSOverrideSensZoneLoadRequest,
                                  Furnace(FurnaceNum).EMSSensibleZoneLoadValue);
-                SetupEMSActuator("Unitary HVAC",
+                SetupEMSActuator(state, "Unitary HVAC",
                                  Furnace(FurnaceNum).Name,
                                  "Moisture Load Request",
                                  "[W]",
@@ -4809,7 +4803,6 @@ namespace Furnaces {
         // Using/Aliasing
         using DataHeatBalance::Zone;
         using DataHeatBalFanSys::TempControlType;
-        using DataPlant::PlantLoop;
         using DataPlant::TypeOf_CoilSteamAirHeating;
         using DataPlant::TypeOf_CoilWaterSimpleHeating;
         using DataSizing::AutoSize;
@@ -4982,7 +4975,7 @@ namespace Furnaces {
         }
 
         // Scan hot water and steam heating coil plant components for one time initializations
-        if (MyPlantScanFlag(FurnaceNum) && allocated(PlantLoop)) {
+        if (MyPlantScanFlag(FurnaceNum) && allocated(state.dataPlnt->PlantLoop)) {
             if ((Furnace(FurnaceNum).HeatingCoilType_Num == Coil_HeatingWater) || (Furnace(FurnaceNum).HeatingCoilType_Num == Coil_HeatingSteam)) {
 
                 if (Furnace(FurnaceNum).HeatingCoilType_Num == Coil_HeatingWater) {
@@ -5008,9 +5001,9 @@ namespace Furnaces {
                         GetCoilMaxWaterFlowRate(state, "Coil:Heating:Water", Furnace(FurnaceNum).HeatingCoilName, ErrorsFound);
                     if (Furnace(FurnaceNum).MaxHeatCoilFluidFlow > 0.0) {
                         rho = GetDensityGlycol(state,
-                                               PlantLoop(Furnace(FurnaceNum).LoopNum).FluidName,
-                                               DataGlobalConstants::HWInitConvTemp(),
-                                               PlantLoop(Furnace(FurnaceNum).LoopNum).FluidIndex,
+                                               state.dataPlnt->PlantLoop(Furnace(FurnaceNum).LoopNum).FluidName,
+                                               DataGlobalConstants::HWInitConvTemp,
+                                               state.dataPlnt->PlantLoop(Furnace(FurnaceNum).LoopNum).FluidIndex,
                                                RoutineName);
                         Furnace(FurnaceNum).MaxHeatCoilFluidFlow *= rho;
                     }
@@ -5041,7 +5034,7 @@ namespace Furnaces {
                     }
                 }
                 // fill outlet node for coil
-                Furnace(FurnaceNum).CoilOutletNode = PlantLoop(Furnace(FurnaceNum).LoopNum)
+                Furnace(FurnaceNum).CoilOutletNode = state.dataPlnt->PlantLoop(Furnace(FurnaceNum).LoopNum)
                                                          .LoopSide(Furnace(FurnaceNum).LoopSide)
                                                          .Branch(Furnace(FurnaceNum).BranchNum)
                                                          .Comp(Furnace(FurnaceNum).CompNum)
@@ -5055,7 +5048,7 @@ namespace Furnaces {
         }
 
         // Scan Supplemental hot water and steam heating coil plant components for one time initializations
-        if (MySuppCoilPlantScanFlag(FurnaceNum) && allocated(PlantLoop)) {
+        if (MySuppCoilPlantScanFlag(FurnaceNum) && allocated(state.dataPlnt->PlantLoop)) {
             if ((Furnace(FurnaceNum).SuppHeatCoilType_Num == Coil_HeatingWater) || (Furnace(FurnaceNum).SuppHeatCoilType_Num == Coil_HeatingSteam)) {
 
                 if (Furnace(FurnaceNum).SuppHeatCoilType_Num == Coil_HeatingWater) {
@@ -5080,9 +5073,9 @@ namespace Furnaces {
                         GetCoilMaxWaterFlowRate(state, "Coil:Heating:Water", Furnace(FurnaceNum).SuppHeatCoilName, ErrorsFound);
                     if (Furnace(FurnaceNum).MaxSuppCoilFluidFlow > 0.0) {
                         rho = GetDensityGlycol(state,
-                                               PlantLoop(Furnace(FurnaceNum).LoopNumSupp).FluidName,
-                                               DataGlobalConstants::HWInitConvTemp(),
-                                               PlantLoop(Furnace(FurnaceNum).LoopNumSupp).FluidIndex,
+                                               state.dataPlnt->PlantLoop(Furnace(FurnaceNum).LoopNumSupp).FluidName,
+                                               DataGlobalConstants::HWInitConvTemp,
+                                               state.dataPlnt->PlantLoop(Furnace(FurnaceNum).LoopNumSupp).FluidIndex,
                                                RoutineName);
                         Furnace(FurnaceNum).MaxSuppCoilFluidFlow *= rho;
                     }
@@ -5112,7 +5105,7 @@ namespace Furnaces {
                     }
                 }
                 // fill outlet node for coil
-                Furnace(FurnaceNum).SuppCoilOutletNode = PlantLoop(Furnace(FurnaceNum).LoopNumSupp)
+                Furnace(FurnaceNum).SuppCoilOutletNode = state.dataPlnt->PlantLoop(Furnace(FurnaceNum).LoopNumSupp)
                                                              .LoopSide(Furnace(FurnaceNum).LoopSideSupp)
                                                              .Branch(Furnace(FurnaceNum).BranchNumSupp)
                                                              .Comp(Furnace(FurnaceNum).CompNumSupp)
@@ -5153,9 +5146,9 @@ namespace Furnaces {
                         SimulateWaterCoilComponents(state, Furnace(FurnaceNum).HeatingCoilName, FirstHVACIteration, Furnace(FurnaceNum).HeatingCoilIndex);
                         CoilMaxVolFlowRate = GetCoilMaxWaterFlowRate(state, "Coil:Heating:Water", Furnace(FurnaceNum).HeatingCoilName, ErrorsFound);
                         if (CoilMaxVolFlowRate != AutoSize) {
-                            rho = GetDensityGlycol(state, PlantLoop(Furnace(FurnaceNum).LoopNum).FluidName,
-                                                   DataGlobalConstants::HWInitConvTemp(),
-                                                   PlantLoop(Furnace(FurnaceNum).LoopNum).FluidIndex,
+                            rho = GetDensityGlycol(state, state.dataPlnt->PlantLoop(Furnace(FurnaceNum).LoopNum).FluidName,
+                                                   DataGlobalConstants::HWInitConvTemp,
+                                                   state.dataPlnt->PlantLoop(Furnace(FurnaceNum).LoopNum).FluidIndex,
                                                    RoutineName);
                             Furnace(FurnaceNum).MaxHeatCoilFluidFlow = CoilMaxVolFlowRate * rho;
                         }
@@ -5194,9 +5187,9 @@ namespace Furnaces {
                         CoilMaxVolFlowRate = GetCoilMaxWaterFlowRate(state, "Coil:Heating:Water", Furnace(FurnaceNum).SuppHeatCoilName, ErrorsFound);
                         if (CoilMaxVolFlowRate != AutoSize) {
                             rho = GetDensityGlycol(state,
-                                                   PlantLoop(Furnace(FurnaceNum).LoopNumSupp).FluidName,
-                                                   DataGlobalConstants::HWInitConvTemp(),
-                                                   PlantLoop(Furnace(FurnaceNum).LoopNumSupp).FluidIndex,
+                                                   state.dataPlnt->PlantLoop(Furnace(FurnaceNum).LoopNumSupp).FluidName,
+                                                   DataGlobalConstants::HWInitConvTemp,
+                                                   state.dataPlnt->PlantLoop(Furnace(FurnaceNum).LoopNumSupp).FluidIndex,
                                                    RoutineName);
                             Furnace(FurnaceNum).MaxSuppCoilFluidFlow = CoilMaxVolFlowRate * rho;
                         }
@@ -6771,9 +6764,6 @@ namespace Furnaces {
         using namespace ScheduleManager;
         using namespace DataZoneEnergyDemands;
         using DataHeatBalFanSys::ZT;
-        using DXCoils::DXCoil;
-        using DXCoils::DXCoilPartLoadRatio;
-        using General::SolveRoot;
 
         using TempSolveRoot::SolveRoot;
 
@@ -6843,10 +6833,10 @@ namespace Furnaces {
         PartLoadRatio = 0.0;
 
         if (Furnace(FurnaceNum).FurnaceType_Num == UnitarySys_HeatPump_AirToAir) {
-            if (DXCoil(Furnace(FurnaceNum).HeatingCoilIndex).IsSecondaryDXCoilInZone) { // assumes compressor is in same location as secondary coil
-                OutdoorDryBulbTemp = ZT(DXCoil(Furnace(FurnaceNum).HeatingCoilIndex).SecZonePtr);
-            } else if (DXCoil(Furnace(FurnaceNum).CoolingCoilIndex).IsSecondaryDXCoilInZone) {
-                OutdoorDryBulbTemp = ZT(DXCoil(Furnace(FurnaceNum).CoolingCoilIndex).SecZonePtr);
+            if (state.dataDXCoils->DXCoil(Furnace(FurnaceNum).HeatingCoilIndex).IsSecondaryDXCoilInZone) { // assumes compressor is in same location as secondary coil
+                OutdoorDryBulbTemp = ZT(state.dataDXCoils->DXCoil(Furnace(FurnaceNum).HeatingCoilIndex).SecZonePtr);
+            } else if (state.dataDXCoils->DXCoil(Furnace(FurnaceNum).CoolingCoilIndex).IsSecondaryDXCoilInZone) {
+                OutdoorDryBulbTemp = ZT(state.dataDXCoils->DXCoil(Furnace(FurnaceNum).CoolingCoilIndex).SecZonePtr);
             } else {
                 if (Furnace(FurnaceNum).CondenserNodeNum > 0) {
                     OutdoorDryBulbTemp = Node(Furnace(FurnaceNum).CondenserNodeNum).Temp;
@@ -7963,7 +7953,7 @@ namespace Furnaces {
                         if (Furnace(FurnaceNum).CoolingCoilType_Num == CoilDX_CoolingHXAssisted) {
 
                             // VS coil issue here...
-                            if (DXCoilPartLoadRatio(Furnace(FurnaceNum).ActualDXCoilIndexForHXAssisted) > 0.0) {
+                            if (state.dataDXCoils->DXCoilPartLoadRatio(Furnace(FurnaceNum).ActualDXCoilIndexForHXAssisted) > 0.0) {
                                 Furnace(FurnaceNum).CoolPartLoadRatio = 1.0;
                                 Furnace(FurnaceNum).CompPartLoadRatio = 1.0;
                             } else {
@@ -7971,7 +7961,7 @@ namespace Furnaces {
                                 Furnace(FurnaceNum).CompPartLoadRatio = 0.0;
                             }
                         } else {
-                            if (DXCoilPartLoadRatio(Furnace(FurnaceNum).CoolingCoilIndex) > 0.0) {
+                            if (state.dataDXCoils->DXCoilPartLoadRatio(Furnace(FurnaceNum).CoolingCoilIndex) > 0.0) {
                                 Furnace(FurnaceNum).CoolPartLoadRatio = 1.0;
                                 Furnace(FurnaceNum).CompPartLoadRatio = 1.0;
                             } else {
@@ -8100,7 +8090,6 @@ namespace Furnaces {
 
         // Using/Aliasing
         using DataHeatBalFanSys::MAT;
-        using General::SolveRoot;
 
         using HeatingCoils::SimulateHeatingCoilComponents;
         using TempSolveRoot::SolveRoot;
@@ -9722,7 +9711,6 @@ namespace Furnaces {
         // Using/Aliasing
         using DataHVACGlobals::SmallLoad;
 
-        using General::SolveRoot;
         using HeatingCoils::SimulateHeatingCoilComponents;
         using PlantUtilities::SetComponentFlowRate;
         using SteamCoils::SimulateSteamCoilComponents;
@@ -10312,8 +10300,6 @@ namespace Furnaces {
         // Use RegulaFalsi technique to iterate on part-load ratio until convergence is achieved.
 
         // Using/Aliasing
-        using General::SolveRoot;
-
         using HeatingCoils::SimulateHeatingCoilComponents;
         using IntegratedHeatPump::GetCurWorkMode;
         using IntegratedHeatPump::GetMaxSpeedNumIHP;

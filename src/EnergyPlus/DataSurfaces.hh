@@ -48,21 +48,22 @@
 #ifndef DataSurfaces_hh_INCLUDED
 #define DataSurfaces_hh_INCLUDED
 
-// EnergyPlus Headers
-#include <EnergyPlus/DataBSDFWindow.hh>
-#include <EnergyPlus/DataGlobals.hh>
-#include <EnergyPlus/DataVectorTypes.hh>
-#include <EnergyPlus/EnergyPlus.hh>
-#include <EnergyPlus/Shape.hh>
+// C++ Headers
+#include <cstddef>
+#include <vector>
 
 // ObjexxFCL Headers
 #include <ObjexxFCL/Array1D.hh>
 #include <ObjexxFCL/Array2D.hh>
 #include <ObjexxFCL/Vector4.hh>
 
-// C++ Headers
-#include <cstddef>
-#include <vector>
+// EnergyPlus Headers
+#include <EnergyPlus/Data/BaseData.hh>
+#include <EnergyPlus/DataBSDFWindow.hh>
+#include <EnergyPlus/DataGlobals.hh>
+#include <EnergyPlus/DataVectorTypes.hh>
+#include <EnergyPlus/EnergyPlus.hh>
+#include <EnergyPlus/Shape.hh>
 
 namespace EnergyPlus {
 
@@ -859,13 +860,9 @@ namespace DataSurfaces {
         bool WindSpeedEMSOverrideOn;
         Real64 WindSpeedEMSOverrideValue;
 
-        // XL added 7/19/2017
         Real64 WindDir;                 // Surface outside wind direction, for surface heat balance and ventilation(degree)
         bool WindDirEMSOverrideOn;      // if true, EMS is calling to override the surface's outside wind direction
         Real64 WindDirEMSOverrideValue; // value to use for EMS override of the surface's outside wind speed
-
-        // XL added 7/25/2017
-
         bool SchedExternalShadingFrac;     // true if the external shading is scheduled or calculated externally to be imported
         int ExternalShadingSchInd;         // Schedule for a the external shading
         bool HasSurroundingSurfProperties; // true if surrounding surfaces properties are listed for an external surface
@@ -1467,6 +1464,14 @@ namespace DataSurfaces {
     std::string cSurfaceClass(SurfaceClass ClassNo);
 
 } // namespace DataSurfaces
+
+struct SurfacesData : BaseGlobalStruct {
+
+    void clear_state() override
+    {
+
+    }
+};
 
 } // namespace EnergyPlus
 
